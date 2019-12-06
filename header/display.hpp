@@ -13,7 +13,7 @@ class MainDisplay: public IMainDisplay
     public:
         WindowObject get_main_window() override;
         DisplayObject get_main_display() override;
-        void show(std::vector<WindowObject> windowList) override;
+        ImageObject show(const std::vector<WindowObject>& windowList) override;
         MainDisplay();
         ~MainDisplay() = default;
 };

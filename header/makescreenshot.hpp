@@ -4,10 +4,11 @@
 
 struct DisplayObject;
 struct WindowObject;
+struct ImageObject;
 
 class ScreenShot
 {
     public:
-        void make_screenshot(const DisplayObject& display, const WindowObject& window, std::string savePath);
+        void make_screenshot(const ImageObject& image, std::string savePath);
 };
 

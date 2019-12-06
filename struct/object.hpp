@@ -14,4 +14,8 @@
         Window _window;
     };
 
+    struct ImageObject
+    {
+        XImage* _image;
+    };
 #endif

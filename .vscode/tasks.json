@@ -6,7 +6,7 @@
         {
             "type": "shell",
             "label": "g++ build active file",
-            "command": "/usr/bin/clang++",
+            "command": "/usr/bin/clang++-9",
             "args": [
                 "-std=c++14",
                 "-g",

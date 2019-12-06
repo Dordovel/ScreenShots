@@ -7,19 +7,12 @@
     #include <vector>
     #include "../struct/object.hpp"
 
-    void ScreenShot::make_screenshot(const DisplayObject& display, const WindowObject& window, std::string savePath)
+    void ScreenShot::make_screenshot(const ImageObject& image, std::string savePath)
     {
-        XImage* image;
         BITMAPFILEHEADER bitHeader;
-        XWindowAttributes windowAttr;
         BITMAPINFOHEADER bitHeaderInfo;
         int bitCount = 32;
-        int dwBmpSize = 0;
-
-        XGetWindowAttributes(display._display, window._window, &windowAttr);
-
-        image = XGetImage(display._display, window._window, 0, 0, windowAttr.width, windowAttr.height, XAllPlanes(), ZPixmap);
-        dwBmpSize = image->width * 4 * image->height;
+        int dwBmpSize = 0;dwBmpSize = image._image->width * 4 * image._image->height;
 
         memset(&bitHeader, 0, sizeof(BITMAPFILEHEADER));
         memset(&bitHeaderInfo, 0, sizeof(BITMAPINFOHEADER));
@@ -30,8 +23,8 @@
         bitHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmpSize;
         
         bitHeaderInfo.biSize = sizeof(BITMAPINFOHEADER);
-        bitHeaderInfo.biWidth = image->width;
-        bitHeaderInfo.biHeight = image->height;
+        bitHeaderInfo.biWidth = image._image->width;
+        bitHeaderInfo.biHeight = image._image->height;
         bitHeaderInfo.biPlanes = 0;
         bitHeaderInfo.biBitCount = bitCount;
         bitHeaderInfo.biSizeImage = 0;
@@ -55,9 +48,9 @@
                 n1 = 4 * (col + w  * row);
                 n2 = 4 * (col + w * (h - row - 1));
 
-                arr[n2 + 0] = image->data[n1 + 0];
-                arr[n2 + 1] = image->data[n1 + 1];
-                arr[n2 + 2] = image->data[n1 + 2];
+                arr[n2 + 0] = image._image->data[n1 + 0];
+                arr[n2 + 1] = image._image->data[n1 + 1];
+                arr[n2 + 2] = image._image->data[n1 + 2];
             }
         }
 
