@@ -5,6 +5,8 @@
 
     #include "X11/Xlib.h"
 
+    MainDisplay::MainDisplay(HINSTANCE hInstance, int nCmdShow):MainDisplay(){}
+
     MainDisplay::MainDisplay()
     {
         this->_display._display = XOpenDisplay(NULL);
@@ -27,7 +29,8 @@
         std::vector<XImage*> imageList;
         XImage* image;
         XWindowAttributes windowAttr;
-        int windowListIter = 0;
+        size_t windowListIter = 0;
+        size_t windowListCount = 0;
         int fd_screen = -1;
         fd_screen = DefaultScreen(this->_display._display);
 
@@ -46,7 +49,9 @@
                 );
         }
 
-        GC gc =  XDefaultGC(this->_display._display, fd_screen);
+        windowListCount = imageList.size();
+
+        GC gc = XDefaultGC(this->_display._display, fd_screen);
 
         XSelectInput(this->_display._display, this->_mainWindow._window, ExposureMask | KeyPressMask);
 
@@ -54,28 +59,20 @@
 
         XEvent event;
 
-        bool windowIsOpen = true;
-        bool showImage = true;
-
-        while (windowIsOpen)
+        while (true)
         {
+            XClearWindow(this->_display._display, this->_mainWindow._window);
+
+            image = imageList.at(windowListIter);
+
+            XPutImage(this->_display._display, this->_mainWindow._window,
+                            gc, image, 0, 0, 0, 0, image->width, image->height);
+
+
             XNextEvent(this->_display._display, &event);
-
-            if(showImage)
-            {   
-                XClearWindow(this->_display._display, this->_mainWindow._window);
-
-                image = imageList.at(windowListIter);
-
-                XPutImage(this->_display._display, this->_mainWindow._window,
-                                gc, image, 0, 0, 0, 0, image->width, image->height);
-
-                showImage = false;
-            }
 
             if(event.type == Expose)
             {
-                showImage = true;
             }
 
             if(event.type == KeyPress)
@@ -88,14 +85,12 @@
                     }
                     else
                     {
-                        windowListIter = imageList.size() - 1;
+                        windowListIter = windowListCount - 1;
                     }
-
-                    showImage = true;
                 }
                 else if (event.xkey.keycode == 113)
                 {
-                    if(windowListIter < imageList.size() - 1)
+                    if(windowListIter < windowListCount - 1)
                     {
                         windowListIter++;
                     }
@@ -103,14 +98,13 @@
                     {
                         windowListIter = 0;
                     }
-
-                    showImage = true;
                 }
                 else if (event.xkey.keycode == 36)
                 {
-                    windowIsOpen = false;
+                    break;
                 }
             }
+
         }
 
         //XCloseDisplay(this->_display._display);

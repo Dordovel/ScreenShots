@@ -5,25 +5,39 @@
 #include "./struct/object.hpp"
 #include "./header/display.hpp"
 
-int main()
-{
-    ScreenShot screenShot;
-    MainDisplay mainDisplay;
-    DisplayObject displayObject;
-    WindowObject windowObject;
+
+#if _WIN32
+
+    int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+    {
+        MainDisplay mainDisplay(hInstance, nCmdShow);
+
+#endif
+
+#if __linux__
+
+    int main()
+    {
+        MainDisplay mainDisplay;
+
+#endif
+
+        ScreenShot screenShot;
+        DisplayObject displayObject;
+        WindowObject windowObject;
 
 
-    displayObject = mainDisplay.get_main_display();
-    windowObject = mainDisplay.get_main_window();
+        displayObject = mainDisplay.get_main_display();
+        windowObject = mainDisplay.get_main_window();
 
-    std::shared_ptr<IWindowProperty> windowProperty(new WindowProperty());
-    std::unique_ptr<IFindWindow> find(new FindWindow(windowProperty,  displayObject, windowObject));
+        std::shared_ptr<IWindowProperty> windowProperty(new WindowProperty());
+        std::unique_ptr<IFindWindow> find(new FindWindowObject(windowProperty,  displayObject, windowObject));
 
-    std::vector<WindowObject> result = std::move(find->search_window());
-    result.push_back(windowObject);
+        std::vector<WindowObject> result = std::move(find->search_window());
+        result.push_back(windowObject);
 
-    ImageObject image = mainDisplay.show(result);
-    screenShot.make_screenshot(image, "screenShot.bmp");
-    
-    return 0;
-}
+        ImageObject image = mainDisplay.show(result);
+        // screenShot.make_screenshot(image, "screenShot.bmp");
+        
+        return 0;
+    }

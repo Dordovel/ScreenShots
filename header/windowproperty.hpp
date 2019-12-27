@@ -8,6 +8,6 @@ class WindowProperty:public IWindowProperty
 
     public:
         unsigned long get_found_object_count() noexcept override;
-        unsigned char* get_window_property(const DisplayObject& display, const WindowObject& window, std::string propertyName) noexcept override;
+        void* get_window_property(const DisplayObject& display, const WindowObject& window, Property propertyName) noexcept override;
         ~WindowProperty() = default;
 };

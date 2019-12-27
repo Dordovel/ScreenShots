@@ -18,4 +18,27 @@
     {
         XImage* _image;
     };
+
+#endif
+
+#if _WIN32
+
+    #include <windows.h>
+    #include <vector>
+
+    struct DisplayObject
+    {
+        HDC _display;
+    };
+
+    struct WindowObject
+    {
+        HWND _window;
+    };
+
+    struct ImageObject
+    {
+        HWND _image;
+    };
+
 #endif
