@@ -37,7 +37,7 @@
         result.push_back(windowObject);
 
         ImageObject image = mainDisplay.show(result);
-        // screenShot.make_screenshot(image, "screenShot.bmp");
+        screenShot.make_screenshot(image, "screenShot.bmp");
         
         return 0;
     }

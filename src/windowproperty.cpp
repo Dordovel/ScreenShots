@@ -50,4 +50,33 @@
         return data;
     }
 
+
+    std::vector<WindowObject> WindowProperty::get_window_list(const DisplayObject& display,
+                                                    const WindowObject& window)
+    {
+        std::vector<WindowObject> objects;
+
+        Window* result = (Window*)this->get_window_property(display,
+                                                            window,
+                                                            Property::WINDOW_HANDLER);
+
+        size_t count = this->get_found_object_count();
+        
+        size_t iter = 0;
+        for(; iter < count; ++iter)
+        {
+            objects.push_back( WindowObject{ result [iter] } );
+        }
+
+        return objects;
+    }
+
+    std::string WindowProperty::get_window_name(const DisplayObject& display,
+                                                const WindowObject& window)
+    {
+        unsigned char* windowName =  (unsigned char*)this->get_window_property(display, window, Property::WINDOW_NAME);
+
+        return reinterpret_cast<char*> (windowName);
+    }
+
 #endif

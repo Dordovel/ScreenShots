@@ -39,6 +39,7 @@
     struct ImageObject
     {
         HWND _image;
+        HBITMAP _hBitmap;
     };
 
 #endif

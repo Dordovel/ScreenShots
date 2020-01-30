@@ -15,19 +15,8 @@
 
     std::vector<WindowObject> FindWindowObject::search_window(std::string searchWindowName)
     {
-        std::vector<WindowObject> windowList;
-
-        Window* result = (Window*)this->_windowProperty->get_window_property(this->_display,
-                                                                            this->_rootWindow,
-                                                                            Property::WINDOW_HANDLER);
-
-        size_t count = this->_windowProperty->get_found_object_count();
-        
-        size_t iter = 0;
-        for(; iter < count; ++iter)
-        {
-            windowList.push_back( WindowObject{ result [iter] } );
-        }
+        std::vector<WindowObject> windowList = this->_windowProperty->get_window_list(this->_display,
+                                                                            this->_rootWindow);
 
         if(!searchWindowName.empty() && !windowList.empty())
         {
@@ -43,21 +32,18 @@
             return searchList;
 
         }
-
         return windowList;
 
     }
 
     bool FindWindowObject::check_window_name(const WindowObject& window, std::string foundName)
     {
-        unsigned char* windowName = (unsigned char *)this->_windowProperty->get_window_property(this->_display,
-                                                                                window,
-                                                                                Property::WINDOW_NAME);
+        std::string windowName = this->_windowProperty->get_window_name(this->_display,
+                                                                                window);
 
-        if(windowName != NULL)
+        if(!windowName.empty())
         {
-            std::string temp(reinterpret_cast<char*> (windowName));
-            if(temp.find(foundName) == 0)
+            if(windowName.find(foundName) == 0)
             {
                 return true;
             }

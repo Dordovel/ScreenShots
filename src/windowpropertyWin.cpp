@@ -9,8 +9,12 @@
 	BOOL CALLBACK EnumWindowsProc( HWND hwnd, LPARAM lParam )
 	{
 		std::vector<HWND>* params = (std::vector<HWND>*)lParam;
+		if(IsWindowVisible ( hwnd ))
+		{
+			params->push_back(hwnd);
+		}
 
-	    params->push_back(hwnd);
+		return TRUE;
 	}
 
 	unsigned long WindowProperty::get_found_object_count() noexcept
@@ -22,32 +26,59 @@
 													const WindowObject& window, 
 													Property propertyName) noexcept
 	{
-		if(Property::WINDOW_HANDLER)
+		if(propertyName == Property::WINDOW_HANDLER)
         {
-        	HWND buffer[50];
-			std::vector<HWND> v;
-			EnumWindows(&EnumWindowsProc, (LPARAM) &v);
-			this->_itemCount = v.size();
+			std::vector<HWND>* v = new std::vector<HWND>();
+			EnumWindows(&EnumWindowsProc, (LPARAM) v);
+			this->_itemCount = v->size();
 
-			size_t iter = 0;
-			size_t count = v.size();
-			
-			for(; iter<count ; ++iter)
-			{
-				buffer[iter] = v.at(iter); 
-			}
-
-			return buffer; 
-        }
+			return v;
+		}
         else if(propertyName == Property::WINDOW_NAME)
-        {
-        	const int bufferSize = 200;
-        	char buffer[bufferSize];
-        	GetWindowText(window._window, buffer, bufferSize);
+		{
+			const int bufferSize = 200;
+			char* buffer = new char[bufferSize];
+			GetWindowText(window._window, buffer, bufferSize);
 
-        	return buffer;
+			return buffer;
         }
-		
+	}
+
+
+	std::vector<WindowObject> WindowProperty::get_window_list(const DisplayObject& display,
+                                                    const WindowObject& window)
+	{
+		std::vector<WindowObject> objects;
+
+		std::vector<HWND>* result = (std::vector<HWND>*) this->get_window_property(display,
+																					window,
+																					Property::WINDOW_HANDLER);
+
+		unsigned long count = this->get_found_object_count();
+        
+        int iter = 0;
+        for(; iter < count; ++iter)
+        {
+            objects.push_back( WindowObject{ result->at(iter) } );
+        }
+        
+        delete result;
+
+		return objects;
+	}
+
+	std::string WindowProperty::get_window_name(const DisplayObject& display,
+												const WindowObject& window)
+	{
+		char* object = (char*)this->get_window_property(display,
+                                                        window,
+                                                        Property::WINDOW_NAME);
+
+		std::string windowName(object);
+
+		delete object;
+
+		return windowName;
 	}
 
 #endif
