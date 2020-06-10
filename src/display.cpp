@@ -1,5 +1,5 @@
 #include "../header/display.hpp"
-#include <iostream>
+#include <string.h>
 
 #if __linux__
 
@@ -38,15 +38,17 @@
                                                     0, 0, 600, 600, 1, 
                                                     BlackPixel(this->_display._display, fd_screen),
                                                     WhitePixel(this->_display._display, fd_screen));
-        
         for(WindowObject object : windowList)
         {
-            XGetWindowAttributes(_display._display, object._window, &windowAttr);
+			XGetWindowAttributes(this->_display._display, object._window, &windowAttr);
 
-            imageList.push_back(
-                    XGetImage(this->_display._display, object._window, 0, 0,
-                                windowAttr.width, windowAttr.height, XAllPlanes(), ZPixmap)
-                );
+			XImage* temp = XGetImage(this->_display._display, object._window, 0, 0,
+                                windowAttr.width, windowAttr.height, AllPlanes, ZPixmap);
+
+			if(strlen(temp->data) > 0)
+			{
+				imageList.push_back(temp);
+			}
         }
 
         windowListCount = imageList.size();
@@ -61,8 +63,6 @@
 
         while (true)
         {
-            XClearWindow(this->_display._display, this->_mainWindow._window);
-
             image = imageList.at(windowListIter);
 
             XPutImage(this->_display._display, this->_mainWindow._window,
@@ -105,6 +105,7 @@
                 }
             }
 
+            XClearWindow(this->_display._display, this->_mainWindow._window);
         }
 
         //XCloseDisplay(this->_display._display);

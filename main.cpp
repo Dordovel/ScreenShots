@@ -33,7 +33,9 @@
         std::shared_ptr<IWindowProperty> windowProperty(new WindowProperty());
         std::unique_ptr<IFindWindow> find(new FindWindowObject(windowProperty,  displayObject, windowObject));
 
-        std::vector<WindowObject> result = std::move(find->search_window());
+		auto window = find->search_window();
+
+        std::vector<WindowObject> result = window;
         result.push_back(windowObject);
 
         ImageObject image = mainDisplay.show(result);

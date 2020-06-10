@@ -60,6 +60,10 @@
 							fillColor = true;
 							showWindowFlag = true;
 						}
+						else
+						{
+							iter = 0;
+						}
 						break;
 					case 'd':
 						if(iter > 0)
@@ -67,6 +71,10 @@
 							iter--;
 							fillColor = true;
 							showWindowFlag = true;
+						}
+						else 
+						{
+							iter = windowsObjectList.size() - 1;
 						}
 						break;
 				}
@@ -218,13 +226,13 @@
 
 		if(!RegisterClassEx(&wc))
 		{
-			MessageBox(NULL, "Error", "RegisterClassEx", MB_ICONEXCLAMATION | MB_OK);
+			MessageBoxW(NULL, L"Error", L"RegisterClassEx", MB_ICONEXCLAMATION | MB_OK);
 		}
 
-		this->_mainWindow._window = CreateWindowEx(
+		this->_mainWindow._window = CreateWindowExW(
 			WS_EX_CLIENTEDGE,
-			"Test",
-			"Test",
+			L"Test",
+			L"Test",
 			WS_CAPTION | WS_SYSMENU | WS_VISIBLE,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT, 900, 500,
@@ -232,7 +240,7 @@
 
 		if(this->_mainWindow._window == NULL)
 		{
-			MessageBox(NULL, "Error","CreateWindowEx", MB_ICONEXCLAMATION | MB_OK);
+			MessageBoxW(NULL, L"Error", L"CreateWindowEx", MB_ICONEXCLAMATION | MB_OK);
 		}else
 		{
 			this->_display._display = GetDC(this->_mainWindow._window);
@@ -264,7 +272,7 @@
 
 		MSG msg;
 
-		ShowWindow(this->_mainWindow._window, this->_nCmdShow);
+		ShowWindow(this->_mainWindow._window, SW_SHOW); 
 		UpdateWindow(this->_mainWindow._window);
 
 		while(GetMessage(&msg, NULL, 0, 0) > 0)
